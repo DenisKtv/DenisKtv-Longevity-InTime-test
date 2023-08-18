@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from .api_docs import (user_delete_responses, user_login_responses,
+                       user_registration_responses, user_retrieve_responses,
+                       user_update_responses)
 from .models import UserProfile
 from .serializers import (UserLoginSerializer, UserProfileDetailSerializer,
                           UserProfileSerializer)
@@ -17,23 +20,25 @@ class UserRegistrationView(generics.GenericAPIView):
 
     @swagger_auto_schema(
         operation_description='Register a new user',
-        responses={
-            201: UserProfileSerializer()},
+        responses=user_registration_responses()
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            error_details = {
+                'message': 'Validation Error',
+                'details': [str(error) for error in serializer.errors.values()]
+            }
+            return Response(error_details, status=status.HTTP_400_BAD_REQUEST)
 
         user = serializer.save()
-
         access_token = get_token_for_user(user)
-
         return Response(
             {
                 'message': 'User registered successfully',
                 'access_token': access_token
             },
-            status=201
+            status=status.HTTP_201_CREATED
         )
 
 
@@ -42,19 +47,23 @@ class UserLoginView(generics.GenericAPIView):
 
     @swagger_auto_schema(
         operation_description='Authenticate a user and return an access token',
-        responses={200: UserLoginSerializer()},
+        responses=user_login_responses()
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            error_details = {
+                'message': 'Validation Error',
+                'details': [str(error) for error in serializer.errors.values()]
+            }
+            return Response(error_details, status=status.HTTP_400_BAD_REQUEST)
+
         user = serializer.validated_data.get('user')
-
         access_token = get_token_for_user(user)
-
         return Response({
             'message': 'User authorized successfully',
             'access_token': access_token,
-        }, status=200)
+        }, status=status.HTTP_200_OK)
 
 
 class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
@@ -64,22 +73,38 @@ class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'email'
 
     @swagger_auto_schema(
-            operation_description='Retrieve a user profile by email'
+        operation_description='Retrieve a user profile by email',
+        responses=user_retrieve_responses()
     )
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
-            operation_description='Update a user profile by email'
+        operation_description='Update a user profile by email',
+        responses=user_update_responses()
     )
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-            operation_description='Delete a user profile by email'
+        operation_description='Partially update a user profile by email',
+        responses=user_update_responses()
     )
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description='Delete a user profile by email',
+        responses=user_delete_responses()
+    )
+    def delete(self, request, *args, **kwargs):
+        response = self.destroy(request, *args, **kwargs)
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            return Response(
+                {'message': 'User profile deleted successfully'},
+                status=status.HTTP_200_OK
+            )
+        return response
 
     def get_object(self):
         email = self.kwargs['email'].lower()
