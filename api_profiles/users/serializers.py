@@ -63,10 +63,30 @@ class UserLoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         validate_otp_data(data)
-        email = data.get("email")
+        email = data.get("email").lower()
         password = data.get("password")
 
         user = authenticate(email=email, password=password)
         if user and user.is_active:
             return {"user": user}
         raise serializers.ValidationError("Invalid login credentials")
+
+
+class UserProfileDetailSerializer(serializers.ModelSerializer):
+    date_joined = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True
+    )
+    last_login = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'date_joined',
+            'last_login'
+        ]

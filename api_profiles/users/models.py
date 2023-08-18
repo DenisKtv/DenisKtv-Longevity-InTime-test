@@ -11,7 +11,7 @@ class UserProfileManager(BaseUserManager):
                 'У пользователей должен быть адрес электронной почты'
             )
 
-        email = self.normalize_email(email)
+        email = self.normalize_email(email.lower())
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
