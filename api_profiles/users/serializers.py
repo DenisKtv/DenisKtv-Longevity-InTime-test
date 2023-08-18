@@ -1,8 +1,9 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
+
 from .models import UserProfile
 from .tasks import send_otp_email
 from .utils import check_otp
-from django.contrib.auth import authenticate
 
 
 def validate_otp_data(data):
@@ -48,6 +49,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if not any(char.isupper() for char in value):
             raise serializers.ValidationError(
                 'Password must contain at least one uppercase letter.'
+            )
+        return value
+
+    def validate_first_name(self, value):
+        if value and not value.isalpha():
+            raise serializers.ValidationError(
+                'First name must contain only letters.'
+            )
+        return value
+
+    def validate_last_name(self, value):
+        if value and not value.isalpha():
+            raise serializers.ValidationError(
+                'Last name must contain only letters.'
             )
         return value
 

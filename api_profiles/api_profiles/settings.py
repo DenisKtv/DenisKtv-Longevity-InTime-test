@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'rest_framework',
     'users',
+    'drf_yasg',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
