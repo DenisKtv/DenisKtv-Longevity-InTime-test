@@ -24,8 +24,8 @@ class UserRegistrationView(generics.GenericAPIView):
 
         return Response(
             {
-                "message": "User registered successfully",
-                "access_token": access_token
+                'message': 'User registered successfully',
+                'access_token': access_token
             },
             status=201
         )
@@ -37,13 +37,13 @@ class UserLoginView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data.get("user")
+        user = serializer.validated_data.get('user')
 
         access_token = get_token_for_user(user)
 
         return Response({
-            "message": "User authorized successfully",
-            "access_token": access_token,
+            'message': 'User authorized successfully',
+            'access_token': access_token,
         }, status=200)
 
 
@@ -60,7 +60,7 @@ class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
         if (self.request.method not in permissions.SAFE_METHODS and
                 obj.email != self.request.user.email):
             raise PermissionDenied(
-                "You do not have permission to access this profile"
+                'You do not have permission to access this profile'
             )
 
         return obj

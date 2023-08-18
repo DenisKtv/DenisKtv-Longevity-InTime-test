@@ -40,6 +40,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'otp'
         ]
 
+    def validate_password(self, value):
+        if len(value) < 9:
+            raise serializers.ValidationError(
+                'Password must be at least 9 characters long.'
+            )
+        if not any(char.isupper() for char in value):
+            raise serializers.ValidationError(
+                'Password must contain at least one uppercase letter.'
+            )
+        return value
+
     def validate(self, data):
         return validate_otp_data(data)
 
@@ -63,13 +74,13 @@ class UserLoginSerializer(serializers.Serializer):
 
     def validate(self, data):
         validate_otp_data(data)
-        email = data.get("email").lower()
-        password = data.get("password")
+        email = data.get('email').lower()
+        password = data.get('password')
 
         user = authenticate(email=email, password=password)
         if user and user.is_active:
-            return {"user": user}
-        raise serializers.ValidationError("Invalid login credentials")
+            return {'user': user}
+        raise serializers.ValidationError('Invalid login credentials')
 
 
 class UserProfileDetailSerializer(serializers.ModelSerializer):
