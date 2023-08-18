@@ -1,7 +1,6 @@
 import os
+from datetime import timedelta
 from pathlib import Path
-from celery import Celery
-from django.conf import settings
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,9 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api_profiles.settings')
 
-app = Celery('api_profiles')
-app.config_from_object('django.conf:settings', namespace='CELERY')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 
@@ -74,6 +70,19 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=120),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -117,3 +126,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.elasticemail.com'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'fisherjournalby@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_KEY')
+EMAIL_SSL_CERTFILE = None
+EMAIL_SSL_KEYFILE = None

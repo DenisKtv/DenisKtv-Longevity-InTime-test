@@ -21,7 +21,7 @@ def send_otp_email(user_email):
     send_mail(
         'Your OTP code',
         f'Your OTP code is {otp_code}',
-        'from_email@example.com',
+        'fisherjournalby@gmail.com',
         [user_email],
         fail_silently=False,
     )

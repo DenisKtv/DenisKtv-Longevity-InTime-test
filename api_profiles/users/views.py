@@ -1,27 +1,42 @@
 from rest_framework import generics
+from rest_framework.response import Response
 from .models import UserProfile
-from .serializers import UserProfileSerializer
-from rest_framework.permissions import IsAuthenticated
+from .utils import get_token_for_user
+from .serializers import UserProfileSerializer, UserLoginSerializer
 
 
-class UserRegistrationView(generics.CreateAPIView):
+class UserRegistrationView(generics.GenericAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-class UserLoginView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+        user = serializer.save()
 
-    def get_object(self):
-        return self.request.user
+        access_token = get_token_for_user(user)
+
+        return Response(
+            {
+                "message": "User registered successfully",
+                "access_token": access_token
+            },
+            status=201
+        )
 
 
-class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+class UserLoginView(generics.GenericAPIView):
+    serializer_class = UserLoginSerializer
 
-    def get_object(self):
-        return self.request.user
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data.get("user")
+
+        access_token = get_token_for_user(user)
+
+        return Response({
+            "message": "User authorized successfully",
+            "access_token": access_token,
+        }, status=200)
