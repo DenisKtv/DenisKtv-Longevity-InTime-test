@@ -39,7 +39,7 @@ def user_login_responses():
                 'details': [
                     'Invalid login credentials',
                     'Invalid OTP',
-                    'OTP sent to your email.',
+                    'Email does not exist in our database',
                 ]
             }
         }),
@@ -75,7 +75,15 @@ def user_update_responses():
                 "last_login": "2019-08-24T14:15:22Z"
             }
         }),
-        400: openapi.Response(description='Validation Error'),
+        400: openapi.Response(description='Validation Error', examples={
+            'application/json': {
+                'First name must contain only letters.',
+                'Last name must contain only letters.',
+                'user profile with this email already exists.',
+                'Password must be at least 9 characters long.',
+                'Password must contain at least one uppercase letter.'
+            }
+        }),
         403: openapi.Response(description='Permission Denied'),
         404: openapi.Response(description='Not Found'),
     }

@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from .api_docs import (user_delete_responses, user_login_responses,
-                       user_registration_responses, user_retrieve_responses,
+from rest_framework import status
+from .api_docs import (user_registration_responses, user_login_responses,
+                       user_delete_responses, user_retrieve_responses,
                        user_update_responses)
 from .models import UserProfile
 from .serializers import (UserLoginSerializer, UserProfileDetailSerializer,
@@ -24,12 +24,7 @@ class UserRegistrationView(generics.GenericAPIView):
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            error_details = {
-                'message': 'Validation Error',
-                'details': [str(error) for error in serializer.errors.values()]
-            }
-            return Response(error_details, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         user = serializer.save()
         access_token = get_token_for_user(user)
@@ -51,12 +46,7 @@ class UserLoginView(generics.GenericAPIView):
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            error_details = {
-                'message': 'Validation Error',
-                'details': [str(error) for error in serializer.errors.values()]
-            }
-            return Response(error_details, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data.get('user')
         access_token = get_token_for_user(user)

@@ -1,9 +1,8 @@
-from django.contrib.auth import authenticate
 from rest_framework import serializers
-
 from .models import UserProfile
 from .tasks import send_otp_email
 from .utils import check_otp
+from django.contrib.auth.hashers import check_password
 
 
 def validate_otp_data(data):
@@ -13,13 +12,21 @@ def validate_otp_data(data):
     if not otp:
         send_otp_email.delay(email)
         raise serializers.ValidationError(
-            {"message": "OTP sent to your email."}
+            {'message': 'OTP sent to your email.'}
         )
 
     if not check_otp(email, otp):
-        raise serializers.ValidationError("Invalid OTP")
+        raise serializers.ValidationError('Invalid OTP')
 
     return data
+
+
+def validate_name(value):
+    if value and not value.isalpha():
+        raise serializers.ValidationError(
+            'Name must contain only letters.'
+        )
+    return value
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -27,6 +34,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         write_only=True, style={'input_type': 'password'}
     )
     otp = serializers.CharField(required=False, write_only=True)
+    first_name = serializers.CharField(
+        validators=[validate_name], required=False
+    )
+    last_name = serializers.CharField(
+        validators=[validate_name], required=False
+    )
 
     class Meta:
         model = UserProfile
@@ -52,20 +65,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_first_name(self, value):
-        if value and not value.isalpha():
-            raise serializers.ValidationError(
-                'First name must contain only letters.'
-            )
-        return value
-
-    def validate_last_name(self, value):
-        if value and not value.isalpha():
-            raise serializers.ValidationError(
-                'Last name must contain only letters.'
-            )
-        return value
-
     def validate(self, data):
         return validate_otp_data(data)
 
@@ -73,8 +72,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = UserProfile.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
             is_active=True
         )
         return user
@@ -88,14 +87,23 @@ class UserLoginSerializer(serializers.Serializer):
     otp = serializers.CharField(required=False, write_only=True)
 
     def validate(self, data):
-        validate_otp_data(data)
         email = data.get('email').lower()
-        password = data.get('password')
 
-        user = authenticate(email=email, password=password)
-        if user and user.is_active:
-            return {'user': user}
-        raise serializers.ValidationError('Invalid login credentials')
+        try:
+            user = UserProfile.objects.get(email=email)
+        except UserProfile.DoesNotExist:
+            raise serializers.ValidationError(
+                'Email does not exist in our database'
+            )
+
+        password = data.get('password')
+        is_password_valid = check_password(password, user.password)
+        is_user_active = user.is_active
+        if not is_password_valid or not is_user_active:
+            raise serializers.ValidationError('Invalid login credentials')
+
+        validate_otp_data(data)
+        return {'user': user}
 
 
 class UserProfileDetailSerializer(serializers.ModelSerializer):
@@ -104,6 +112,12 @@ class UserProfileDetailSerializer(serializers.ModelSerializer):
     )
     last_login = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True
+    )
+    first_name = serializers.CharField(
+        validators=[validate_name], required=False
+    )
+    last_name = serializers.CharField(
+        validators=[validate_name], required=False
     )
 
     class Meta:
