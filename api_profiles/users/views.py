@@ -100,8 +100,8 @@ class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
         email = self.kwargs['email'].lower()
         obj = get_object_or_404(UserProfile, email=email)
 
-        if (self.request.method not in permissions.SAFE_METHODS and
-                obj.email != self.request.user.email):
+        if (self.request.method not in permissions.SAFE_METHODS
+                and obj.email != self.request.user.email):
             raise PermissionDenied(
                 'You do not have permission to access this profile'
             )
