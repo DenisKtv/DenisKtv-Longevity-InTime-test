@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api_profiles.settings')
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
 
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-h_g+24x0%c6dgs')
@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-h_g+24x0%c6dgs')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['185.107.237.87', 'localhost', '127.0.0.1']
 
 
 INSTALLED_APPS = [
@@ -67,12 +67,12 @@ AUTH_USER_MODEL = 'users.UserProfile'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'mydatabase'),
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'mydatabase'),
         'USER': os.getenv('POSTGRES_USER', 'user'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
-        'HOST': 'db',
-        'PORT': '5432',
+        'HOST': os.getenv('DB_HOST', 'api_db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -92,7 +92,7 @@ SIMPLE_JWT = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://redis:6379/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -133,7 +133,8 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -3,9 +3,8 @@ FROM python:3-slim
 WORKDIR /app
 
 COPY requirements.txt /app
-
 RUN pip3 install -r /app/requirements.txt --no-cache-dir
 
 COPY api_profiles/ /app/
 
-CMD ["gunicorn", "api_profiles.wsgi:application", "--bind", "0:8003"]
+CMD ["celery", "-A", "api_profiles", "worker", "--loglevel=info"]
