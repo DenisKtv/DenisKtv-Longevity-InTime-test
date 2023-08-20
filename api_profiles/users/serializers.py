@@ -1,8 +1,9 @@
+from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
+
 from .models import UserProfile
 from .tasks import send_otp_email
 from .utils import check_otp
-from django.contrib.auth.hashers import check_password
 
 
 def validate_otp_data(data):
