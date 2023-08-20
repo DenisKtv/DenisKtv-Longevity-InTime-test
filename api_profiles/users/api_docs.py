@@ -14,6 +14,7 @@ def user_registration_responses():
                     'Email must be unique.',
                     'Password must be at least 9 characters long.',
                     'Password must contain at least one uppercase letter.',
+                    'Password must contain at least one digit.',
                     'First name must contain only letters.',
                     'Last name must contain only letters.',
                     'Invalid OTP',
@@ -79,9 +80,7 @@ def user_update_responses():
             'application/json': {
                 'First name must contain only letters.',
                 'Last name must contain only letters.',
-                'user profile with this email already exists.',
-                'Password must be at least 9 characters long.',
-                'Password must contain at least one uppercase letter.'
+                'user profile with this email already exists.'
             }
         }),
         403: openapi.Response(description='Permission Denied'),

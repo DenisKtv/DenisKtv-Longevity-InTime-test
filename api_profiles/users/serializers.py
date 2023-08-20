@@ -63,6 +63,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Password must contain at least one uppercase letter.'
             )
+        if not any(char.isdigit() for char in value):
+            raise serializers.ValidationError(
+                'Password must contain at least one digit.'
+            )
         return value
 
     def validate(self, data):
