@@ -1,10 +1,12 @@
-import pytest
 from unittest.mock import patch
-from rest_framework.exceptions import ValidationError
-from users.serializers import (UserProfileSerializer, UserLoginSerializer,
-                               UserProfileDetailSerializer)
-from users.models import UserProfile
+
+import pytest
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from users.models import UserProfile
+from users.serializers import (UserLoginSerializer,
+                               UserProfileDetailSerializer,
+                               UserProfileSerializer)
 
 
 class TestUserRegistration:

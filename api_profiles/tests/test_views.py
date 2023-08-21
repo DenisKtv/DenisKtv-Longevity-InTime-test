@@ -1,13 +1,13 @@
-from users.models import UserProfile
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
+from unittest.mock import patch
+
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
-from unittest.mock import patch
-from users.serializers import UserLoginSerializer, UserProfileDetailSerializer
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+from users.models import UserProfile
+from users.serializers import UserLoginSerializer, UserProfileDetailSerializer
 
 
 class UserRegistrationViewTest(APITestCase):
@@ -66,8 +66,8 @@ class TestUserLoginSerializer:
         assert 'non_field_errors' in serializer.errors
 
     def test_invalid_password(self):
-        User = get_user_model()
-        User.objects.create_user(
+        user = get_user_model()
+        user.objects.create_user(
             email='test@example.com',
             password='Password123',
             is_active=True,
@@ -85,8 +85,8 @@ class TestUserLoginSerializer:
     @patch('users.serializers.send_otp_email.delay')
     @patch('users.serializers.UserProfile.objects.get')
     def test_missing_otp(self, mocked_get_user, mocked_send_otp):
-        User = get_user_model()
-        mocked_get_user.return_value = User(
+        user = get_user_model()
+        mocked_get_user.return_value = user(
             email='test@example.com', password='Password123', is_active=True
         )
         mocked_send_otp.return_value = None
