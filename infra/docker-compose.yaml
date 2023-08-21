@@ -2,6 +2,8 @@ version: '3.8'
 services:
   api_db:
     image: postgres:latest
+    networks:
+      - mynetwork
     restart: always
     volumes:
       - db_api_value:/var/lib/postgresql/data/
@@ -10,6 +12,8 @@ services:
 
   api_backend:
     image: denisktv/api_profiles:latest
+    networks:
+      - mynetwork
     restart: always
     volumes:
       - static_api_value:/app/static/
@@ -23,6 +27,8 @@ services:
   api_nginx:
     image: nginx:latest
     restart: always
+    networks:
+      - mynetwork
     ports:
       - "83:80"
     volumes:
@@ -36,16 +42,25 @@ services:
   redis:
     image: redis:latest
     restart: always
+    networks:
+      - mynetwork
     ports:
       - "6379:6379"
 
   celery:
     image: denisktv/celery:latest
-    volumes:
-      - .:/app
+    command: celery -A api_profiles worker --loglevel=info
+    env_file:
+      - .env
+    networks:
+      - mynetwork
     depends_on:
       - redis
       - api_db
+
+networks:
+  mynetwork:
+    driver: bridge
 
 volumes:
   static_api_value:
