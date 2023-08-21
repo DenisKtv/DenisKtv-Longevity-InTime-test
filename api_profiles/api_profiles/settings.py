@@ -16,7 +16,7 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-h_g+24x0%c6dgs')
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['185.107.237.87', 'localhost', '127.0.0.1']
 
@@ -65,21 +65,14 @@ WSGI_APPLICATION = 'api_profiles.wsgi.application'
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-#         'NAME': os.getenv('DB_NAME', 'mydatabase'),
-#         'USER': os.getenv('POSTGRES_USER', 'user'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
-#         'HOST': os.getenv('DB_HOST', 'api_db'),
-#         'PORT': os.getenv('DB_PORT', '5432'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'mydatabase'),
+        'USER': os.getenv('POSTGRES_USER', 'user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
+        'HOST': os.getenv('DB_HOST', 'api_db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
