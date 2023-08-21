@@ -71,6 +71,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        email = data.get('email').lower()
+        if UserProfile.objects.filter(email=email).exists():
+            raise serializers.ValidationError(
+                'Email already exists in our database'
+            )
         return validate_otp_data(data)
 
     def create(self, validated_data):
