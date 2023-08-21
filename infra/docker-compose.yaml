@@ -48,7 +48,7 @@ services:
       - "6379:6379"
 
   celery:
-    image: denisktv/celery:latest
+    image: denisktv/celery:v1.0
     command: celery -A api_profiles worker --loglevel=info
     env_file:
       - .env
