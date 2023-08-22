@@ -30,7 +30,7 @@ cd DenisKtv-longevity-intime-test/
 
 * Create and activate a virtual environment:
 
-````bash
+```bash
 python -m venv venv
 ```
 
@@ -63,9 +63,9 @@ pip install -r requirements.txt
 ```
 
 * Test run:
-
 ```bash
 pytest
+```
 
 <img src="images/pytest.png" alt="Alt text" title="Optional Title" width="300" />
 
@@ -110,6 +110,7 @@ docker-compose exec api_backend python manage.py createsuperuser
 * Build statics:
 ```bash
 docker-compose exec api_backend python manage.py collectstatic --no-input
+```
 
 ## Page for the test:
 The page is available at the link:
