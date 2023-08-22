@@ -68,21 +68,12 @@ def user_update_responses():
     return {
         200: openapi.Response(description='Successful update', examples={
             'application/json': {
-                "id": 0,
                 "email": "user@example.com",
                 "first_name": "string",
-                "last_name": "string",
-                "date_joined": "2019-08-24T14:15:22Z",
-                "last_login": "2019-08-24T14:15:22Z"
+                "last_name": "string"
             }
         }),
-        400: openapi.Response(description='Validation Error', examples={
-            'application/json': {
-                'First name must contain only letters.',
-                'Last name must contain only letters.',
-                'user profile with this email already exists.'
-            }
-        }),
+        400: openapi.Response(description='Validation Error'),
         403: openapi.Response(description='Permission Denied'),
         404: openapi.Response(description='Not Found'),
     }
