@@ -124,7 +124,7 @@ API documentation is available at the link (created with redoc):
 
 ### http://185.107.237.87:83/register/
 <img src="images/register1.png" alt="Alt text" title="Optional Title" width="300" /> <img src="images/register2.png" alt="Alt text" title="Optional Title" width="400" />
-### Receive the code by e-mail
+### Receive the code by e-mail(in spam)
 <img src="images/email.png" alt="Alt text" title="Optional Title" width="600" />
 
 
