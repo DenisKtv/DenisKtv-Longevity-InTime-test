@@ -16,7 +16,7 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-h_g+24x0%c6dgs')
 
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['185.107.237.87', 'localhost', '127.0.0.1']
 
@@ -76,6 +76,7 @@ DATABASES = {
     }
 }
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -134,6 +135,7 @@ PASSWORD_HASHERS = [
 ]
 
 STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
