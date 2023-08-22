@@ -67,7 +67,7 @@ pip install -r requirements.txt
 pytest
 ```
 
-<img src="images/pytest.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/pytest.png" alt="Alt text" title="Optional Title" width="600" />
 
 * Make the migrations:
 
@@ -123,19 +123,19 @@ API documentation is available at the link (created with redoc):
 ## Examples of requests:
 
 ### http://185.107.237.87:83/register/
-<img src="images/register1.png" alt="Alt text" title="Optional Title" width="250" /> <img src="images/register2.png" alt="Alt text" title="Optional Title" width="250" />
+<img src="images/register1.png" alt="Alt text" title="Optional Title" width="300" /> <img src="images/register2.png" alt="Alt text" title="Optional Title" width="400" />
 ### Receive the code by e-mail
-<img src="images/email.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/email.png" alt="Alt text" title="Optional Title" width="600" />
 
 
 ### http://185.107.237.87:83/login/
-<img src="images/login1.png" alt="Alt text" title="Optional Title" width="300" /> <img src="images/login2.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/login1.png" alt="Alt text" title="Optional Title" width="300" /> <img src="images/login2.png" alt="Alt text" title="Optional Title" width="500" />
 
 
 ### http://185.107.237.87:83/'profile/<str:email>/'
 ### GET can be viewed by all authorized users; for authorization in Headers in Authorization enter 'Bearer our token':
-<img src="images/get.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/get.png" alt="Alt text" title="Optional Title" width="400" />
 ### UPDATE(put, patch) - you can only change your profile:
-<img src="images/update.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/update.png" alt="Alt text" title="Optional Title" width="400" />
 ### DELETE - you can delete only your profile:
-<img src="images/Delete.png" alt="Alt text" title="Optional Title" width="300" />
+<img src="images/Delete.png" alt="Alt text" title="Optional Title" width="400" />
