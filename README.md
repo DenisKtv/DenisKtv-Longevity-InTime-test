@@ -66,7 +66,7 @@ pip install -r requirements.txt
 
 ```bash
 pytest
-```
+
 <img src="images/pytest.png" alt="Alt text" title="Optional Title" width="300" />
 
 * Make the migrations:
@@ -75,7 +75,6 @@ pytest
 python manage.py makemigrations
 python manage.py migrate
 ```
-
 
 * Run server:
 
@@ -111,7 +110,6 @@ docker-compose exec api_backend python manage.py createsuperuser
 * Build statics:
 ```bash
 docker-compose exec api_backend python manage.py collectstatic --no-input
-```
 
 ## Page for the test:
 The page is available at the link:
