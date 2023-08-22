@@ -16,7 +16,7 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-h_g+24x0%c6dgs')
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['185.107.237.87', 'localhost', '127.0.0.1']
 
@@ -75,7 +75,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
